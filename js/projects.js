@@ -31,25 +31,44 @@
       .join(' ');
   }
 
+  function fromRepo(repo, o) {
+    var language = repo.primaryLanguage && repo.primaryLanguage.name;
+    return {
+      title: o.title || prettify(repo.name),
+      description: (o.description || repo.description || '').trim(),
+      tags: o.tags || (language ? [language] : []),
+      codeUrl: repo.url,
+      demoUrl: o.homepageUrl !== undefined ? o.homepageUrl : repo.homepageUrl,
+      featured: Boolean(o.featured),
+      hidden: Boolean(o.hidden),
+      order: typeof o.order === 'number' ? o.order : Infinity,
+      updatedAt: repo.updatedAt || ''
+    };
+  }
+
+  // Proyectos que no son repos públicos (array "manual" de los overrides)
+  function fromManual(m) {
+    return {
+      title: m.title || '',
+      description: (m.description || '').trim(),
+      tags: m.tags || [],
+      codeUrl: m.codeUrl || '',
+      demoUrl: m.demoUrl || '',
+      featured: Boolean(m.featured),
+      hidden: Boolean(m.hidden),
+      order: typeof m.order === 'number' ? m.order : Infinity,
+      updatedAt: ''
+    };
+  }
+
   function merge(repos, overrides) {
-    return repos
+    var fromRepos = repos
       .filter(function (repo) { return !repo.isFork && !repo.isArchived; })
-      .map(function (repo) {
-        var o = overrides[repo.name] || {};
-        return {
-          name: repo.name,
-          title: o.title || prettify(repo.name),
-          description: (o.description || repo.description || '').trim(),
-          url: repo.url,
-          homepageUrl: o.homepageUrl !== undefined ? o.homepageUrl : repo.homepageUrl,
-          language: o.language || (repo.primaryLanguage && repo.primaryLanguage.name) || '',
-          featured: Boolean(o.featured),
-          hidden: Boolean(o.hidden),
-          order: typeof o.order === 'number' ? o.order : Infinity,
-          updatedAt: repo.updatedAt || ''
-        };
-      })
-      .filter(function (p) { return !p.hidden; })
+      .map(function (repo) { return fromRepo(repo, overrides[repo.name] || {}); });
+    var manual = (Array.isArray(overrides.manual) ? overrides.manual : []).map(fromManual);
+
+    return manual.concat(fromRepos)
+      .filter(function (p) { return !p.hidden && p.title; })
       .sort(function (a, b) {
         if (a.featured !== b.featured) return a.featured ? -1 : 1;
         if (a.order !== b.order) return a.order - b.order;
@@ -87,12 +106,23 @@
     card.appendChild(desc);
 
     var footer = el('div', 'card__footer');
-    if (p.language) footer.appendChild(el('span', 'tag', p.language));
-    else footer.appendChild(el('span'));
+    var tags = el('ul', 'card__tags');
+    p.tags.forEach(function (tag) {
+      var li = el('li');
+      li.appendChild(el('span', 'tag', tag));
+      tags.appendChild(li);
+    });
+    footer.appendChild(tags);
 
     var links = el('ul', 'card__links');
-    links.appendChild(link(p.url, 'Código', p.title));
-    if (p.homepageUrl) links.appendChild(link(p.homepageUrl, 'Demo', p.title));
+    if (p.codeUrl) {
+      links.appendChild(link(p.codeUrl, 'Código', p.title));
+    } else {
+      var priv = el('li');
+      priv.appendChild(el('span', 'card__private', 'Código privado'));
+      links.appendChild(priv);
+    }
+    if (p.demoUrl) links.appendChild(link(p.demoUrl, 'Demo', p.title));
     footer.appendChild(links);
     card.appendChild(footer);
 
@@ -146,6 +176,9 @@
         return;
       }
       var cards = projects.map(renderCard);
+      // Con un número impar de destacados, el último ocupa toda la fila
+      var featured = cards.filter(function (card) { return card.classList.contains('card--featured'); });
+      if (featured.length % 2 === 1) featured[featured.length - 1].classList.add('card--wide');
       cards.forEach(function (card) { grid.appendChild(card); });
       reveal(cards);
     })

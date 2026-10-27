@@ -1,13 +1,36 @@
 {
-  "_ayuda": "Claves por nombre exacto del repo. Campos opcionales: title, description, order (menor = antes), featured (true/false), hidden (true/false), homepageUrl, language.",
+  "_ayuda": "Claves por nombre exacto del repo. Campos opcionales: title, description, order (menor = antes), featured (true/false), hidden (true/false), homepageUrl, tags (array). En \"manual\" van proyectos que no son repos públicos: title, description, tags, demoUrl, codeUrl (si falta, se muestra \"Código privado\"), featured, order, hidden.",
+  "manual": [
+    {
+      "title": "JST Commerce — Automatización de WhatsApp",
+      "description": "Web de servicios de mi agencia de automatización con bots de WhatsApp, n8n e integraciones.",
+      "tags": ["HTML", "CSS", "JS", "Vercel"],
+      "demoUrl": "https://www.jst-commerce.com",
+      "featured": true,
+      "order": 1
+    },
+    {
+      "title": "Bot de WhatsApp para e-commerce",
+      "description": "Bot para una tienda con Shopify que confirma pedidos, recoge la ubicación de entrega y responde preguntas con IA, con paso a humano.",
+      "tags": ["n8n", "WhatsApp Cloud API", "Shopify", "Gemini", "Supabase"],
+      "featured": true,
+      "order": 2
+    },
+    {
+      "title": "Reportes Pymes",
+      "description": "SaaS de control de cash flow para pymes en EE. UU. Conecta la cuenta bancaria con Plaid, categoriza cada transacción con IA y muestra ingresos, gastos y neto mensual en tiempo real, con presupuestos, alertas y reportes generados por IA.",
+      "tags": ["Next.js", "TypeScript", "Supabase", "Plaid", "Stripe", "IA"],
+      "demoUrl": "https://www.reportes-pymes.app",
+      "featured": true,
+      "order": 3
+    }
+  ],
   "Leno": {
     "title": "Leno",
-    "featured": true,
     "order": 1
   },
   "tutor-website": {
     "title": "Tutor Website",
-    "featured": true,
     "order": 2
   },
   "PIG-GAME": {
