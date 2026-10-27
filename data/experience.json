@@ -1,0 +1,49 @@
+{
+  "_ayuda": "Cada fila: role, org, place, dates y description (todos opcionales salvo role). El orden del array es el orden en la web.",
+  "experiencia": [
+    {
+      "role": "Fundador · Automatización con WhatsApp",
+      "org": "JST Commerce",
+      "place": "Remoto",
+      "dates": "2026 – actualidad",
+      "description": "Diseño y construyo bots de WhatsApp y automatizaciones con n8n para negocios: confirmación de pedidos desde Shopify, captura de ubicación de entrega, asistente con IA y paso a humano. También desarrollé la web y el portal de clientes."
+    },
+    {
+      "role": "Problem Solve · Soporte de operaciones",
+      "org": "Amazon",
+      "place": "San Antonio, TX",
+      "dates": "abr 2025 – may 2026",
+      "description": "Resolución de incidencias de inventario y flujo de pedidos en un centro logístico. Formación interna en soporte IT."
+    },
+    {
+      "role": "Problem Solve · Fulfillment Associate",
+      "org": "Amazon",
+      "place": "Turlock, CA",
+      "dates": "abr 2023 – mar 2025",
+      "description": "Identificación y resolución de errores de inventario y envío. Me trasladaron internamente a Texas."
+    }
+  ],
+  "formacion": [
+    {
+      "role": "CFGS Desarrollo de Aplicaciones Web (DAW)",
+      "org": "Prometeo by thePower",
+      "place": "Madrid",
+      "dates": "2026 – actualidad"
+    },
+    {
+      "role": "Máster de Especialización en Data Analytics",
+      "org": "thePower",
+      "dates": "2026 – actualidad"
+    },
+    {
+      "role": "HiSET (equivalente a bachillerato)",
+      "place": "California",
+      "dates": "2022"
+    },
+    {
+      "role": "Comunicación Social (6 de 10 semestres)",
+      "org": "Universidad Santa María",
+      "place": "Venezuela"
+    }
+  ]
+}

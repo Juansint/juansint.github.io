@@ -6,8 +6,6 @@
   if (!grid) return;
 
   var PENDING = 'Descripción pendiente';
-  var STAGGER_MS = 80;
-  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function fetchJSON(url, fallback) {
     return fetch(url, { cache: 'no-cache' }).then(function (res) {
@@ -85,8 +83,9 @@
 
   function link(href, label, title) {
     var li = el('li');
-    var a = el('a', null, label);
+    var a = el('a');
     a.href = href;
+    a.appendChild(el('span', 'link-underline', label));
     a.rel = 'noopener';
     a.appendChild(el('span', 'sr-only', ' de ' + title));
     li.appendChild(a);
@@ -94,7 +93,7 @@
   }
 
   function renderCard(p) {
-    var card = el('article', 'card' + (p.featured ? ' card--featured' : ''));
+    var card = el('article', 'card reveal' + (p.featured ? ' card--featured' : ''));
 
     var top = el('div', 'card__top');
     top.appendChild(el('h3', 'card__title', p.title));
@@ -129,31 +128,6 @@
     return card;
   }
 
-  function reveal(cards) {
-    if (reducedMotion || !('IntersectionObserver' in window)) return;
-
-    document.documentElement.classList.add('reveal-ready');
-
-    var observer = new IntersectionObserver(function (entries) {
-      var batch = entries.filter(function (entry) { return entry.isIntersecting; });
-      batch.forEach(function (entry, i) {
-        var card = entry.target;
-        card.style.transitionDelay = (i * STAGGER_MS) + 'ms';
-        card.classList.add('is-visible');
-        observer.unobserve(card);
-        // Al terminar la entrada, quita el retardo para que el hover responda al instante
-        card.addEventListener('transitionend', function done(ev) {
-          if (ev.propertyName !== 'opacity') return;
-          card.style.transitionDelay = '';
-          card.classList.add('is-done');
-          card.removeEventListener('transitionend', done);
-        });
-      });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
-
-    cards.forEach(function (card) { observer.observe(card); });
-  }
-
   function showError() {
     grid.textContent = '';
     var msg = el('p', 'projects__status', 'No he podido cargar los proyectos. Puedes verlos directamente en ');
@@ -180,7 +154,7 @@
       var featured = cards.filter(function (card) { return card.classList.contains('card--featured'); });
       if (featured.length % 2 === 1) featured[featured.length - 1].classList.add('card--wide');
       cards.forEach(function (card) { grid.appendChild(card); });
-      reveal(cards);
+      if (window.revealOnScroll) window.revealOnScroll(cards);
     })
     .catch(showError);
 })();

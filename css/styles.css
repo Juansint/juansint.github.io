@@ -17,6 +17,7 @@
   --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   --radius: 14px;
   --gutter: clamp(16px, 4vw, 40px);
+  --header-h: 64px;
 
   color-scheme: light dark;
 }
@@ -80,6 +81,28 @@ a {
   max-width: 1120px;
   margin: 0 auto;
   padding: 0 var(--gutter);
+}
+
+/* Subrayado que aparece de izquierda a derecha y se recoge hacia la derecha.
+   Va en el enlace o en un span dentro de él (cuando el enlace tiene relleno para el área táctil). */
+.link-underline {
+  display: inline;
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 100% 100%;
+  background-size: 0% 1px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 300ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.link-underline:hover,
+.link-underline:focus-visible,
+a:hover > .link-underline,
+a:focus-visible > .link-underline {
+  background-position: 0 100%;
+  background-size: 100% 1px;
 }
 
 .sr-only {
@@ -239,9 +262,13 @@ a {
 
 /* ---------- Proyectos ---------- */
 
-.projects {
+.section {
   padding: clamp(56px, 9vw, 112px) 0;
-  scroll-margin-top: 16px;
+  scroll-margin-top: var(--header-h);
+}
+
+.section + .section {
+  padding-top: clamp(8px, 2vw, 24px);
 }
 
 .section-head {
@@ -309,6 +336,7 @@ a {
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -318,24 +346,62 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
+  transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 
 .card:hover,
 .card:focus-within {
   transform: translateY(-4px);
   box-shadow: var(--shadow-hover);
-  border-color: var(--accent);
 }
 
-/* Estado inicial de la animación de entrada (solo si JS la activa) */
-.reveal-ready .card {
+/* Borde de acento que nace en las 4 esquinas y se junta en el centro de cada lado.
+   8 segmentos (dos por lado, anclados en las esquinas) recortados por la máscara a un
+   anillo de 1.5px que sigue el radio. Su grosor es el radio para cubrir también la curva. */
+.card::after {
+  --seg: var(--radius);
+  content: "";
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent)),
+    linear-gradient(var(--accent), var(--accent)), linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat;
+  background-position:
+    left top, right top, left bottom, right bottom,
+    left top, left bottom, right top, right bottom;
+  background-size:
+    0 var(--seg), 0 var(--seg), 0 var(--seg), 0 var(--seg),
+    var(--seg) 0, var(--seg) 0, var(--seg) 0, var(--seg) 0;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: background-size 450ms cubic-bezier(.2, .7, .2, 1);
+}
+
+/* 50% + 1px: los dos segmentos se solapan un poco para que no quede una rendija en el centro */
+.card:hover::after,
+.card:focus-within::after {
+  --half: calc(50% + 1px);
+  background-size:
+    var(--half) var(--seg), var(--half) var(--seg), var(--half) var(--seg), var(--half) var(--seg),
+    var(--seg) var(--half), var(--seg) var(--half), var(--seg) var(--half), var(--seg) var(--half);
+}
+
+/* Estado inicial de la animación de entrada (solo si js/reveal.js la activa) */
+.reveal-ready .reveal {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 500ms ease-out, transform 500ms ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
 }
 
-.reveal-ready .card.is-visible {
+.reveal-ready .reveal.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -345,7 +411,7 @@ a {
   transform: translateY(-4px);
 }
 
-.reveal-ready .card.is-done {
+.reveal-ready .reveal.is-done {
   transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
 }
 
@@ -468,16 +534,311 @@ a {
   color: var(--accent);
   font-weight: 600;
   font-size: 0.9375rem;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-  text-decoration-color: transparent;
-  transition: text-decoration-color 0.2s ease, background-color 0.2s ease;
+  text-decoration: none;
 }
 
-.card__links a:hover {
-  text-decoration-color: currentColor;
-  background: var(--tag-bg);
+/* ---------- Experiencia y formación (línea de tiempo) ---------- */
+
+.timeline {
+  --dot: 11px;
+  --dot-top: 8px;
+  --row-gap: 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-width: 880px;
+}
+
+.timeline--compact {
+  --row-gap: 20px;
+  --dot-top: 7px;
+}
+
+.timeline__item {
+  position: relative;
+  padding: 0 0 var(--row-gap) 32px;
+}
+
+.timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+/* Punto azul marino de cada fila */
+.timeline__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--dot-top);
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--bg);
+  z-index: 1;
+}
+
+/* Línea fina que une cada punto con el siguiente */
+.timeline__item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--dot) / 2 - 0.5px);
+  top: calc(var(--dot-top) + var(--dot) / 2);
+  bottom: calc(var(--dot-top) * -1 - var(--dot) / 2);
+  width: 1px;
+  background: var(--border);
+}
+
+.timeline__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "role" "org" "dates" "desc";
+  transition: transform 0.25s ease-out;
+}
+
+.timeline__item:hover .timeline__body {
+  transform: translateX(4px);
+}
+
+.timeline__role {
+  grid-area: role;
+  font-size: 1.1875rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-weight: 650;
+}
+
+.timeline--compact .timeline__role {
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.timeline__org {
+  grid-area: org;
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 0.9688rem;
+}
+
+.timeline__dates {
+  grid-area: dates;
+  margin-top: 2px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.9;
+  white-space: nowrap;
+}
+
+.timeline__desc {
+  grid-area: desc;
+  margin-top: 8px;
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 0.9688rem;
+}
+
+@media (min-width: 640px) {
+  .timeline__body {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "role dates" "org dates" "desc desc";
+    column-gap: 24px;
+  }
+  .timeline__dates {
+    margin-top: 0;
+    text-align: right;
+  }
+}
+
+.timeline__status {
+  color: var(--muted);
+}
+
+/* ---------- Navegación ---------- */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.site-header.is-scrolled,
+.site-header.is-open {
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-bottom-color: var(--border);
+  -webkit-backdrop-filter: saturate(140%) blur(12px);
+  backdrop-filter: saturate(140%) blur(12px);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1120px;
+  height: var(--header-h);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.nav__brand {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  padding: 8px 0;
+}
+
+.nav__menu {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav__links {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav__links a:hover {
+  color: var(--accent);
+}
+
+.btn--sm {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 0.875rem;
+}
+
+.nav__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.nav__bars,
+.nav__bars::before,
+.nav__bars::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+.nav__bars {
+  position: relative;
+}
+
+.nav__bars::before,
+.nav__bars::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.nav__bars::before {
+  top: -6px;
+}
+
+.nav__bars::after {
+  top: 6px;
+}
+
+.is-open .nav__bars {
+  background: transparent;
+}
+
+.is-open .nav__bars::before {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.is-open .nav__bars::after {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Menú hamburguesa (solo con JS; sin JS los enlaces siguen visibles) */
+@media (max-width: 767px) {
+  .js .nav__toggle {
+    display: inline-flex;
+  }
+
+  .js .nav__menu {
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 8px var(--gutter) 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+  }
+
+  .js .is-open .nav__menu {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .js .nav__links {
+    flex-direction: column;
+    margin: 0 -12px;
+  }
+
+  .js .nav__links a {
+    min-height: 48px;
+    font-size: 1.0625rem;
+  }
+
+  .js .nav__menu .btn {
+    min-height: 48px;
+  }
+
+  /* Sin JS: solo los tres enlaces, compactos en una línea */
+  html:not(.js) .nav__links a {
+    padding: 0 6px;
+    font-size: 0.875rem;
+  }
+  html:not(.js) .nav__brand,
+  html:not(.js) .nav__menu .btn {
+    display: none;
+  }
 }
 
 /* ---------- Footer ---------- */
@@ -512,7 +873,8 @@ a {
   padding: 0 10px;
   color: var(--text);
   font-weight: 500;
-  text-underline-offset: 4px;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
 .footer__links a:hover {
@@ -537,7 +899,8 @@ a {
     animation-duration: 0.01ms !important;
   }
   .card:hover,
-  .card:focus-within {
+  .card:focus-within,
+  .timeline__item:hover .timeline__body {
     transform: none;
   }
 }

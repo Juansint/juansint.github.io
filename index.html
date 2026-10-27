@@ -16,10 +16,31 @@
   <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
   <link rel="manifest" href="favicon_io/site.webmanifest">
   <link rel="stylesheet" href="css/styles.css">
+  <script>document.documentElement.classList.add('js');</script>
+  <script src="js/nav.js" defer></script>
   <script src="js/hero-cubes.js" defer></script>
+  <script src="js/reveal.js" defer></script>
   <script src="js/projects.js" defer></script>
+  <script src="js/experience.js" defer></script>
 </head>
 <body>
+  <header class="site-header" data-header>
+    <nav class="nav" aria-label="Principal">
+      <a class="nav__brand" href="#inicio">JC Domínguez</a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Abrir menú">
+        <span class="nav__bars" aria-hidden="true"></span>
+      </button>
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__links">
+          <li><a href="#proyectos"><span class="link-underline">Proyectos</span></a></li>
+          <li><a href="#experiencia"><span class="link-underline">Experiencia</span></a></li>
+          <li><a href="#formacion"><span class="link-underline">Formación</span></a></li>
+        </ul>
+        <a class="btn btn--primary btn--sm" href="https://www.linkedin.com/in/juanc-dominguez" rel="noopener">LinkedIn</a>
+      </div>
+    </nav>
+  </header>
+
   <main>
     <section class="hero" id="inicio" aria-labelledby="hero-title">
       <canvas class="hero__canvas" aria-hidden="true"></canvas>
@@ -34,7 +55,7 @@
       </div>
     </section>
 
-    <section class="projects" id="proyectos" aria-labelledby="projects-title">
+    <section class="section projects" id="proyectos" aria-labelledby="projects-title">
       <div class="container">
         <header class="section-head">
           <h2 class="section-head__title" id="projects-title">Proyectos</h2>
@@ -45,14 +66,36 @@
         </div>
       </div>
     </section>
+
+    <section class="section" id="experiencia" aria-labelledby="experience-title">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-head__title" id="experience-title">Experiencia</h2>
+        </header>
+        <ol class="timeline" data-timeline="experiencia">
+          <li class="timeline__status">Cargando experiencia…</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section" id="formacion" aria-labelledby="education-title">
+      <div class="container">
+        <header class="section-head">
+          <h2 class="section-head__title" id="education-title">Formación</h2>
+        </header>
+        <ol class="timeline timeline--compact" data-timeline="formacion">
+          <li class="timeline__status">Cargando formación…</li>
+        </ol>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <div class="container footer__inner">
       <p>© 2026 Juan Carlos Domínguez</p>
       <ul class="footer__links">
-        <li><a href="https://github.com/Juansint" rel="noopener">GitHub</a></li>
-        <li><a href="https://www.linkedin.com/in/juanc-dominguez" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://github.com/Juansint" rel="noopener"><span class="link-underline">GitHub</span></a></li>
+        <li><a href="https://www.linkedin.com/in/juanc-dominguez" rel="noopener"><span class="link-underline">LinkedIn</span></a></li>
       </ul>
     </div>
   </footer>
