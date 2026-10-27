@@ -1,0 +1,27 @@
+{
+  "_ayuda": "Claves por nombre exacto del repo. Campos opcionales: title, description, order (menor = antes), featured (true/false), hidden (true/false), homepageUrl, language.",
+  "Leno": {
+    "title": "Leno",
+    "featured": true,
+    "order": 1
+  },
+  "tutor-website": {
+    "title": "Tutor Website",
+    "featured": true,
+    "order": 2
+  },
+  "PIG-GAME": {
+    "title": "Pig Game",
+    "order": 3
+  },
+  "Lumina-Creative": {
+    "title": "Lumina Creative",
+    "order": 4
+  },
+  "Juansint": {
+    "hidden": true
+  },
+  "juansint.github.io": {
+    "hidden": true
+  }
+}

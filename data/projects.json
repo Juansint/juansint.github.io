@@ -1,0 +1,72 @@
+[
+  {
+    "name": "juansint.github.io",
+    "description": "",
+    "url": "https://github.com/Juansint/juansint.github.io",
+    "homepageUrl": "",
+    "primaryLanguage": {
+      "name": "HTML"
+    },
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-27T11:52:00Z"
+  },
+  {
+    "name": "Juansint",
+    "description": "Perfil de GitHub",
+    "url": "https://github.com/Juansint/Juansint",
+    "homepageUrl": "",
+    "primaryLanguage": null,
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-08T21:06:29Z"
+  },
+  {
+    "name": "tutor-website",
+    "description": "Landing page responsive para una plataforma de cursos en vídeo, con HTML, CSS y JavaScript.",
+    "url": "https://github.com/Juansint/tutor-website",
+    "homepageUrl": "https://tutor-website-weld-xi.vercel.app",
+    "primaryLanguage": {
+      "name": "HTML"
+    },
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-08T20:59:02Z"
+  },
+  {
+    "name": "Lumina-Creative",
+    "description": "Web multipágina para una agencia creativa, maquetada con HTML y CSS.",
+    "url": "https://github.com/Juansint/Lumina-Creative",
+    "homepageUrl": "",
+    "primaryLanguage": {
+      "name": "HTML"
+    },
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-08T20:58:44Z"
+  },
+  {
+    "name": "Leno",
+    "description": "Landing page de una app de productividad, responsive con HTML, CSS y JavaScript.",
+    "url": "https://github.com/Juansint/Leno",
+    "homepageUrl": "https://leno-sigma.vercel.app",
+    "primaryLanguage": {
+      "name": "HTML"
+    },
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-08T20:58:08Z"
+  },
+  {
+    "name": "PIG-GAME",
+    "description": "Juego de dados para dos jugadores en JavaScript vanilla: DOM, estado y eventos.",
+    "url": "https://github.com/Juansint/PIG-GAME",
+    "homepageUrl": "https://pig-game-three-sandy.vercel.app",
+    "primaryLanguage": {
+      "name": "JavaScript"
+    },
+    "isFork": false,
+    "isArchived": false,
+    "updatedAt": "2026-10-08T20:57:16Z"
+  }
+]
