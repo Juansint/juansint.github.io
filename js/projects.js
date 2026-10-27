@@ -128,6 +128,28 @@
     return card;
   }
 
+  // Brillo del borde: guarda la posición del puntero dentro de la tarjeta en --mx/--my,
+  // como mucho una vez por frame. Al salir no se toca, así el brillo se apaga donde estaba.
+  function trackPointer() {
+    var pending = null;
+    var frame = 0;
+
+    function write() {
+      frame = 0;
+      var rect = pending.card.getBoundingClientRect();
+      pending.card.style.setProperty('--mx', (pending.x - rect.left) + 'px');
+      pending.card.style.setProperty('--my', (pending.y - rect.top) + 'px');
+    }
+
+    grid.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      var card = e.target.closest('.card');
+      if (!card) return;
+      pending = { card: card, x: e.clientX, y: e.clientY };
+      if (!frame) frame = window.requestAnimationFrame(write);
+    }, { passive: true });
+  }
+
   function showError() {
     grid.textContent = '';
     var msg = el('p', 'projects__status', 'No he podido cargar los proyectos. Puedes verlos directamente en ');
@@ -155,6 +177,7 @@
       if (featured.length % 2 === 1) featured[featured.length - 1].classList.add('card--wide');
       cards.forEach(function (card) { grid.appendChild(card); });
       if (window.revealOnScroll) window.revealOnScroll(cards);
+      trackPointer();
     })
     .catch(showError);
 })();
