@@ -258,6 +258,30 @@ a:focus-visible > .link-underline {
   background: var(--tag-bg);
 }
 
+.btn__icon {
+  flex: none;
+  margin: 0 8px 0 -4px;
+}
+
+/* "Descargar CV" + enlace pequeño a la versión en inglés, siempre juntos al hacer wrap */
+.hero__cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hero__alt {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 8px;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
 .btn:active {
   transform: translateY(1px);
 }
